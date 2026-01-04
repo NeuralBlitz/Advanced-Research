@@ -93,6 +93,7 @@ Where $\hat{v}_i$ denotes the omission of the $i$-th vertex.
 
 **Matrix Reduction (Gaussian Elimination):**
 To find the Betti numbers, we compute the rank of the boundary matrices.
+
 $$ \beta_k = \dim(\ker \partial_k) - \dim(\text{im } \partial_{k+1}) $$
 
 In the TEC framework, a non-zero $\beta_1$ indicates a "Byzantine Cycle."

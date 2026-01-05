@@ -1,5 +1,3 @@
- **[NeuralBlitz/Advanced-Research](https://github.com/NeuralBlitz/Advanced-Research)**
- It aligns with the focus on unifying theoretical physics, formal mathematics, and symbiotic AI.
 
 ---
 

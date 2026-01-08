@@ -1,5 +1,8 @@
-# The Holographic Entropic-Tension Architecture (HETA)
-### A Topological Framework for Self-Organizing Distributed Computation
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/3bf58aa7-fa68-4bc0-8f5b-f290b3462a10" />
+
+>**The Holographic Entropic-Tension Architecture (HETA)**
+>
+>*A Topological Framework for Self-Organizing Distributed Computation*
 
 **Abstract**
 This thesis introduces the **Holographic Entropic-Tension Architecture (HETA)**, a novel computational framework that synthesizes **Ricci Flow dynamics** from differential geometry, **Free Energy minimization** from neuroscience (Friston), and **CRDT (Conflict-free Replicated Data Type)** logic from distributed systems. HETA treats a distributed network not as a static graph, but as a dynamic Riemannian manifold where computational tasks create "curvature" (information density), and the network topology actively evolves to minimize "entropic tension" (latency/energy cost) via geometric deformation.

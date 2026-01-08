@@ -1,7 +1,8 @@
-![image](https://github.com/user-attachments/assets/4d8863ea-94bf-4f02-9283-7224efaa3171)
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f2b1e97d-706c-4646-9697-5e249c1d4824" />
 
->The Tensor-Holographic Homeostatic Engine (THHE)
-## A Negentropic Framework for Distributed State Coherence and Autopoietic Compute
+>**The Tensor-Holographic Homeostatic Engine (THHE)**
+>
+>*A Negentropic Framework for Distributed State Coherence and Autopoietic Compute*
 
 **Abstract**
 This thesis introduces the **Tensor-Holographic Homeostatic Engine (THHE)**, a novel architectural workflow designed to solve the "State-Entropy Crisis" in hyper-scale distributed systems. Current distributed ledgers and mesh networks suffer from scalar inefficiencies where coordination overhead grows superlinearly with node count ($O(n \log n)$ or $O(n^2)$). The THHE proposes a paradigm shift by modeling computational clusters as **thermodynamic manifolds**. By utilizing holographic encoding (inspired by the AdS/CFT correspondence) for data redundancy and a biologically inspired homeostatic control loop for resource allocation, the THHE achieves asymptotic consensus approaching $O(1)$ relative to state volume, constrained only by the speed of light (latency) and the Landauer limit.

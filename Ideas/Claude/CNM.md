@@ -1,4 +1,6 @@
-# A Unified Categorical Framework for Adaptive Meta-Learning: Topological Optimization, Differential Geometry, and Information-Theoretic Foundations
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/14ee4a12-9a3e-4a90-878e-cb5e4ac88a48" />
+
+>**A Unified Categorical Framework for Adaptive Meta-Learning:** *Topological Optimization, Differential Geometry, and Information-Theoretic Foundations*
 
 **Author**: Claude AI System  
 **Institution**: Anthropic Research Division  

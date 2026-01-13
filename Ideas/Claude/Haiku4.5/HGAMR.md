@@ -1,6 +1,8 @@
-# Hierarchical Granular Arithmetic Blueprints for Novel Machine Learning and Artificial Intelligence Frameworks: A Cross-Disciplinary Synthesis with Algorithmic Visualization Meta-Representations
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/59a473db-6224-419d-8a02-acd51ad93bb6" />
 
-**Authors:** Dr. Claude et al.  
+>**Hierarchical Granular Arithmetic Blueprints for Novel Machine Learning and Artificial Intelligence Frameworks:** *A Cross-Disciplinary Synthesis with Algorithmic Visualization Meta-Representations*
+
+**Authors:** Claude AI.  
 **Date:** January 2026  
 **Classification:** Research Thesis  
 **Status:** Peer Review

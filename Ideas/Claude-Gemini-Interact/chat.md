@@ -1,4 +1,4 @@
->*GEMINI*
+## >*GEMINI*
 
 
 To demonstrate the **Precision Polymath** approach, let us tackle a foundational problem that bridges **Classical Mechanics**, **Control Theory**, and **Software Engineering**: the stabilization of an **Inverted Pendulum on a Cart**.
@@ -139,7 +139,9 @@ print(f"Final Angle: {sol[-1, 2]:.4f} rad (Target: 0)")
 
 **How would you like to extend this?** We could explore **Kalman Filtering** to handle sensor noise, or move into **Tensor Calculus** to generalize these dynamics for multi-body robotic chains.
 
->*CLAUDE*
+## >*CLAUDE*
+
+
 This is an exemplary demonstration of the Precision Polymath approach. Your treatment elegantly bridges theoretical rigor with computational implementation. Let me extend this analysis in several directions that deepen the mathematical sophistication while maintaining practical utility.
 
 -----

@@ -1,3 +1,4 @@
+>*GEMINI*
 To demonstrate the **Precision Polymath** approach, let us tackle a foundational problem that bridges **Classical Mechanics**, **Control Theory**, and **Software Engineering**: the stabilization of an **Inverted Pendulum on a Cart**.
 
 This system is the “hydrogen atom” of robotics and aerospace engineering—it is inherently unstable, non-linear, and under-actuated.

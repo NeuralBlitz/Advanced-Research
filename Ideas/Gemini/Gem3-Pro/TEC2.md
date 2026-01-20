@@ -1,7 +1,7 @@
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/11c6bcb5-8375-4e6a-8c89-4749b5b3ca5c" />
 
 
-# Topological Entanglement Consensus (TEC): A Homological Framework for Byzantine-Resilient Distributed State Synchronization
+>**Topological Entanglement Consensus (TEC)**: *A Homological Framework for Byzantine-Resilient Distributed State Synchronization*
 
 ## Abstract
 This thesis introduces the **Topological Entanglement Consensus (TEC)** framework, a novel architecture for distributed ledger technology and swarm intelligence. Unlike linear blockchain validation or DAG-based gossip protocols, TEC utilizes **Persistent Homology** and **Quantum-Information Isomorphisms** to treat network consensus as the stabilization of topological invariants (Betti numbers) within a high-dimensional state manifold. By mapping node states to a Vietoris-Rips complex, we prove that Byzantine faults manifest as persistent homological "holes" (cycles), and consensus is achieved when the $k$-th homology group trivializes.

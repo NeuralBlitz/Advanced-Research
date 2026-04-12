@@ -36,7 +36,7 @@ dependencies = [
     "aiohttp>=3.8.0",
     "asyncio-throttle>=1.0.0",
     "markdown>=3.4.0",
-    "pygments>=2.10.0",
+    "pygments>=2.20.0",
 ]
 
 [project.optional-dependencies]

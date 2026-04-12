@@ -48,7 +48,7 @@ lrs-agents = [
 opencode = [
     "opencode-api>=1.0.0",
     "gitpython>=3.1.0",
-    "tree-sitter>=0.20.0",
+    "tree-sitter>=0.23.2",
 ]
 neuralblitz = [
     "neuralblitz-v50>=1.0.0",

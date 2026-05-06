@@ -98,6 +98,7 @@ def construct_attention_node(input_tensor, attention_weights, projection_matrice
 $$\sum_{j=1}^{m} (\mathbf{P}^{-1}\mathbf{A}\mathbf{P})_{ij} = 1$$
 
 **Proof**: 
+
 $$\sum_{j=1}^{m} (\mathbf{P}^{-1}\mathbf{A}\mathbf{P})_{ij} = \sum_{j=1}^{m} \sum_{k=1}^{m} (\mathbf{P}^{-1})_{ik} a_{kj} p_{jk}$$
 
 $$= \sum_{k=1}^{m} (\mathbf{P}^{-1})_{ik} \sum_{j=1}^{m} a_{kj} p_{jk} = \sum_{k=1}^{m} (\mathbf{P}^{-1})_{ik} \cdot 1 \cdot p_{kk}$$

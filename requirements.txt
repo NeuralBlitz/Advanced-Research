@@ -29,6 +29,8 @@ equinox>=0.10.0
 
 # Development dependencies
 pytest>=7.0.0
+pytest-asyncio>=1.2.0
+black>=23.0.0
 pytest-asyncio>=0.21.0
 black>=25.11.0
 ruff>=0.1.0

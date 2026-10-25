@@ -1,6 +1,6 @@
 torch>=2.0.0
 numpy>=1.21.0
-scipy>=1.7.0
+scipy>=1.15.3
 matplotlib>=3.5.0
 jupyter>=1.1.1
 pydantic>=2.13.3

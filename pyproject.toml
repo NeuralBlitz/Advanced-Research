@@ -57,7 +57,7 @@ opencode = [
 neuralblitz = [
     "neuralblitz-v50>=1.0.0",
     "jax>=0.4.0",
-    "flax>=0.7.0",
+    "flax>=0.10.7",
     "equinox>=0.10.0",
 ]
 dev = [

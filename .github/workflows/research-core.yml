@@ -1,0 +1,45 @@
+name: Research core checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python-core:
+    name: Python syntax and context tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Context tests exercise the core module without installing the
+      # optional heavyweight ML and remote-service integrations.
+      - name: Install test dependencies
+        run: python -m pip install pytest pydantic
+      - name: Compile Python source
+        run: python -m compileall -q src/advanced_research
+      - name: Run Python core tests
+        run: PYTHONPATH=src python -m pytest -q tests
+
+  go-core:
+    name: Go build and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Download Go dependencies
+        run: go mod download
+      - name: Race-test Go context manager
+        run: go test -race ./pkg/core
+      - name: Build and test Go packages
+        run: go test ./...
+      - name: Run go vet
+        run: go vet ./...

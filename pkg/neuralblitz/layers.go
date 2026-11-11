@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"sync"
-	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -71,6 +70,9 @@ func (ra *RiemannianAttention) Forward(input *Tensor) (*Tensor, error) {
 	batchSize := input.Shape[0]
 	seqLen := input.Shape[1]
 	dimension := input.Shape[2]
+	if dimension != ra.config.Dimension {
+		return nil, fmt.Errorf("input dimension %d does not match manifold dimension %d", dimension, ra.config.Dimension)
+	}
 
 	// Project to Q, K, V
 	Q := ra.project(input, ra.queryWeight)

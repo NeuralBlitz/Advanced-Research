@@ -74,6 +74,21 @@ func TestReadRuntimeConfigRejectsMissingAndMalformedFiles(t *testing.T) {
 	}
 }
 
+func TestReadRuntimeConfigRejectsInvalidScalarsAndBackend(t *testing.T) {
+	badPort := writeConfig(t, "server:\n  http_port: banana\n")
+	if _, err := readRuntimeConfig(badPort); err == nil {
+		t.Fatal("invalid HTTP port must not silently use zero")
+	}
+	badBackend := writeConfig(t, "integrations:\n  neuralblitz:\n    backend: unknown\n")
+	if _, err := readRuntimeConfig(badBackend); err == nil {
+		t.Fatal("unsupported computation backend must fail")
+	}
+	badEnabled := writeConfig(t, "integrations:\n  lrs:\n    enabled: perhaps\n")
+	if _, err := readRuntimeConfig(badEnabled); err == nil {
+		t.Fatal("invalid enabled state must fail")
+	}
+}
+
 func TestGeneratedConfigDoesNotEnableExternalIntegrations(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "generated.yaml")
 	if err := createDefaultConfig(path); err != nil {

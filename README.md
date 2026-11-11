@@ -44,7 +44,7 @@ The research contained here focuses on creating a symbiotic intelligence framewo
 
 *   **/Ideas**: A collection of evolving theories, draft algorithms, and interdisciplinary research manuscripts. Research proposals and mathematical claims should not be treated as independently validated without supporting proofs, reproducible experiments, or independent review.
 
-**Current engineering status:** The repository contains Python and Go implementations, but no tracked automated tests or CI workflow definitions on `main` as of November 11, 2026. A set of Git gitlink entries also lacks the `.gitmodules` mapping required for normal recursive submodule initialization; avoid relying on `git submodule update --init --recursive` until that mapping is restored.
+**Engineering status (November 11, 2026):** Python and Go core regression tests, the `.github/workflows/research-core.yml` CI workflow, and Go dependency checksums have been added. These checks cover syntax, compilation, context behavior, and pipeline reporting; they do not establish correctness of external services or scientific claims. Existing gitlinks still lack the `.gitmodules` mappings required for normal recursive submodule initialization; avoid relying on `git submodule update --init --recursive` until those mappings are recovered.
 
 ---
 

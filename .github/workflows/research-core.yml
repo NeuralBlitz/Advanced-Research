@@ -41,5 +41,13 @@ jobs:
         run: go test -race ./pkg/core
       - name: Build and test Go packages
         run: go test -mod=mod ./...
+      - name: Capture resolved Go checksums for repository reproducibility
+        run: |
+          echo "GO_SUM_BEGIN"
+          cat go.sum
+          echo "GO_SUM_END"
+          echo "GO_MOD_DIFF_BEGIN"
+          git diff -- go.mod
+          echo "GO_MOD_DIFF_END"
       - name: Run go vet
         run: go vet -mod=mod ./...

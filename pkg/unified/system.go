@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/advanced-research/go/pkg/core"
+	core "github.com/advanced-research/go/pkg/core"
 	"github.com/advanced-research/go/pkg/lrs"
 	"github.com/advanced-research/go/pkg/neuralblitz"
 	"github.com/advanced-research/go/pkg/opencode"
@@ -79,12 +79,20 @@ type SystemStatistics struct {
 
 // Config represents the unified system configuration
 type Config struct {
-	Server      core.Config         `yaml:"server" json:"server"`
+	Server      ServerConfig         `yaml:"server" json:"server"`
 	LRS         *lrs.Config         `yaml:"lrs" json:"lrs"`
 	Opencode    *opencode.Config    `yaml:"opencode" json:"opencode"`
 	NeuralBlitz *neuralblitz.Config `yaml:"neuralblitz" json:"neuralblitz"`
 	Processing  ProcessingConfig     `yaml:"processing" json:"processing"`
 	Security    SecurityConfig      `yaml:"security" json:"security"`
+}
+
+// ServerConfig captures the documented listener settings independently of the
+// context injector configuration. The HTTP/gRPC servers are not implemented here.
+type ServerConfig struct {
+	Host     string `yaml:"host" json:"host"`
+	HTTPPort int    `yaml:"http_port" json:"http_port"`
+	GRPCPort int    `yaml:"grpc_port" json:"grpc_port"`
 }
 
 // ProcessingConfig represents processing-related configuration
@@ -109,7 +117,7 @@ type SecurityConfig struct {
 // DefaultConfig returns the default configuration
 func DefaultConfig() *Config {
 	return &Config{
-		Server:      *core.DefaultConfig(),
+		Server:      ServerConfig{Host: "127.0.0.1", HTTPPort: 8080, GRPCPort: 9090},
 		LRS:         lrs.DefaultConfig(),
 		Opencode:    opencode.DefaultConfig(),
 		NeuralBlitz: neuralblitz.DefaultConfig(),
@@ -167,8 +175,15 @@ func NewSystem(config *Config, logger *logrus.Logger) (*System, error) {
 	// Initialize core components
 	var err error
 
-	// Initialize context injector
-	system.contextInjector = core.NewContextInjector(&config.Processing)
+	// Translate processing preferences into the distinct core injector config.
+	contextConfig := core.DefaultConfig()
+	if config.Processing.ContextMaxSize > 0 {
+		contextConfig.MaxContextSize = config.Processing.ContextMaxSize
+	}
+	if config.Processing.ContextCleanupInterval > 0 {
+		contextConfig.CleanupInterval = config.Processing.ContextCleanupInterval
+	}
+	system.contextInjector = core.NewContextInjector(contextConfig)
 
 	// Initialize LRS client
 	system.lrsClient, err = lrs.NewClient(config.LRS, logger)

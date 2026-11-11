@@ -90,6 +90,7 @@ class LRSIntegration(BaseIntegration):
     ) -> None:
         if not self.enabled:
             return
+        self.require_real_adapter("record_learning_event")
 
         record = LearningRecord(
             actor=actor,

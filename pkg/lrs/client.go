@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -133,6 +134,11 @@ type Client struct {
 	logger      *logrus.Logger
 	batchBuffer []*LearningRecord
 	mutex       sync.RWMutex
+}
+
+// Enabled reports whether a non-nil client has an enabled configuration.
+func (c *Client) Enabled() bool {
+	return c != nil && c.config != nil && c.config.Enabled
 }
 
 // NewClient creates a new LRS client
@@ -482,8 +488,7 @@ func min(a, b int) int {
 	return b
 }
 
-func readResponseBody(body *http.Response) ([]byte, error) {
-	defer body.Close()
+func readResponseBody(body io.Reader) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	_, err := buf.ReadFrom(body)
 	return buf.Bytes(), err

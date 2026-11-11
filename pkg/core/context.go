@@ -201,9 +201,8 @@ func (ci *ContextInjector) GetContext(ctx context.Context, maxTokens *int) strin
 	ci.mutex.RLock()
 	defer ci.mutex.RUnlock()
 
-	// Clean up expired blocks first
-	ci.cleanupExpiredBlocks()
-
+	// The periodic cleanup goroutine removes expired entries under an exclusive
+	// lock. Read paths must not delete map keys while holding only an RLock.
 	// Convert map to slice for sorting
 	blocks := make([]*ContextBlock, 0, len(ci.contextBlocks))
 	for _, block := range ci.contextBlocks {

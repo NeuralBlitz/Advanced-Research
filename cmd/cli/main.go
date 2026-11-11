@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,7 +11,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/sirupsen/logrus"
 
-	"github.com/advanced-research/go/pkg/core"
+	core "github.com/advanced-research/go/pkg/core"
 	"github.com/advanced-research/go/pkg/lrs"
 	"github.com/advanced-research/go/pkg/neuralblitz"
 	"github.com/advanced-research/go/pkg/opencode"
@@ -475,7 +474,7 @@ func runContextDemo(cmd *cobra.Command, args []string) {
 	// Create context injector
 	config := core.DefaultConfig()
 	injector := core.NewContextInjector(config)
-	defer injector.Close(cmd.Context())
+	defer injector.Close()
 
 	color.White("\n📝 Adding sample context blocks...")
 
@@ -533,7 +532,11 @@ func testIntegrations(cmd *cobra.Command, args []string) {
 	// Test LRS integration
 	if config.LRS != nil && config.LRS.Enabled {
 		color.Cyan("\n📚 Testing LRS Integration...")
-		lrsClient := lrs.NewClient(config.LRS, logger)
+		lrsClient, err := lrs.NewClient(config.LRS, logger)
+		if err != nil {
+			color.Red("  ❌ Failed to construct LRS client: %v", err)
+			return
+		}
 		
 		// Test learning record
 		record := &lrs.LearningRecord{
@@ -628,7 +631,6 @@ func getConfigPath() string {
 }
 
 func createDefaultConfig(path string) {
-	defaultConfig := unified.DefaultConfig()
 	
 	// In a real implementation, this would marshal the config to YAML
 	// For now, we'll create a simple config file

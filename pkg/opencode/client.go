@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
@@ -192,7 +191,7 @@ func (c *Client) initialize(ctx context.Context) error {
 // initGitRepository initializes or opens the git repository
 func (c *Client) initGitRepository() error {
 	repo, err := git.PlainOpen(c.config.LocalPath)
-	if err == git.ErrRepositoryNotYetExists {
+	if err == git.ErrRepositoryNotExists {
 		// Initialize new repository
 		repo, err = git.PlainInit(c.config.LocalPath, false)
 		if err != nil {

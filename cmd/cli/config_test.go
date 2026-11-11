@@ -93,6 +93,9 @@ func TestGeneratedConfigDoesNotEnableExternalIntegrations(t *testing.T) {
 	if cfg.LRS.Enabled || cfg.Opencode.Enabled {
 		t.Fatalf("external services must be opt-in: LRS=%v Opencode=%v", cfg.LRS.Enabled, cfg.Opencode.Enabled)
 	}
+	if cfg.Security.JWTSecret != "" {
+		t.Fatal("default runtime must not contain a hard-coded signing secret")
+	}
 	if cfg.Server.Host != "127.0.0.1" {
 		t.Fatalf("generated configuration must not expose a network listener: %s", cfg.Server.Host)
 	}

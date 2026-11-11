@@ -212,6 +212,24 @@ func NewSystem(config *Config, logger *logrus.Logger) (*System, error) {
 	return system, nil
 }
 
+// CreateResearchDocument forwards a pipeline document to the configured
+// research workspace, keeping storage access behind the unified system.
+func (s *System) CreateResearchDocument(
+	ctx context.Context,
+	title, content string,
+	stage opencode.ResearchStage,
+	docType opencode.DocumentType,
+	tags []string,
+	metadata map[string]interface{},
+) (string, error) {
+	if s == nil || s.opencodeClient == nil {
+		return "", fmt.Errorf("research document integration is unavailable")
+	}
+	return s.opencodeClient.CreateResearchDocument(
+		ctx, title, content, stage, docType, tags, metadata,
+	)
+}
+
 // CreateSession creates a new user session
 func (s *System) CreateSession(ctx context.Context, userID string, mode SystemMode, preferences map[string]interface{}) (string, error) {
 	s.mutex.Lock()

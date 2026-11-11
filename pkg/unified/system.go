@@ -129,7 +129,7 @@ func DefaultConfig() *Config {
 			ContextCleanupInterval: time.Hour,
 		},
 		Security: SecurityConfig{
-			JWTSecret:           "your-jwt-secret-key",
+			JWTSecret:           "", // Set through explicit deployment configuration before enabling token issuance.
 			TokenExpiry:         24 * time.Hour,
 			RefreshTokenExpiry:  168 * time.Hour, // 7 days
 			BCryptCost:          12,

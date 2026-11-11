@@ -28,7 +28,7 @@ For a new theoretical result or substantial revision, include:
 ## Code contribution checklist
 
 - Keep changes scoped and explain the expected behavior.
-- Add or update automated tests for new or changed behavior. **The repository currently lacks tracked test suites**; establishing them is an active maintenance priority.
+- Add or update automated tests for new or changed behavior. Core Python and Go tests are tracked under `tests/` and `pkg/`, and run through `.github/workflows/research-core.yml`. Expand these suites for any new functionality.
 - Avoid introducing service credentials, private datasets, or API tokens into source, examples, logs, or test fixtures.
 - Keep external integrations optional and test offline behavior separately from integration tests.
 - Do not modify external repositories through this repository's gitlink entries. The tracked gitlinks currently have no `.gitmodules` mapping; repair of that configuration requires confirmed target URLs.
@@ -39,7 +39,6 @@ For a new theoretical result or substantial revision, include:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e ".[dev]"
-# Once tests are added:
 python -m pytest
 ```
 

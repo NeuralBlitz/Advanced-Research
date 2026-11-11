@@ -34,18 +34,18 @@ def init(
     if not config_file.exists():
         default_config = {
             "lrs": {
-                "enabled": True,
+                "enabled": False,
+                "mode": "mock",
                 "endpoint": "http://localhost:8080/xapi/",
-                "username": "researcher",
-                "password": "password",
             },
             "opencode": {
-                "enabled": True,
-                "api_key": "your-opencode-api-key",
+                "enabled": False,
+                "mode": "mock",
                 "workspace": "advanced-research",
             },
             "neuralblitz": {
-                "enabled": True,
+                "enabled": False,
+                "mode": "mock",
                 "backend": "jax",
                 "model": {
                     "hidden_dim": 256,
@@ -69,7 +69,7 @@ def init(
     integrations = IntegrationsManager(config)
     asyncio.run(integrations.initialize_all())
 
-    console.print("[green]✓[/green] All integrations initialized successfully")
+    console.print("[yellow]Configured integrations initialized (mock mode is simulated, not connected).[/yellow]")
 
 
 @app.command()
@@ -82,7 +82,7 @@ def context_demo(
     console.print("[bold blue]Context Injection System Demo[/bold blue]")
 
     # Create LRS integration
-    lrs_config = {"enabled": True, "endpoint": "http://localhost:8080/xapi/"}
+    lrs_config = {"enabled": False, "mode": "mock", "endpoint": "http://localhost:8080/xapi/"}
     lrs_integration = LRSIntegration(lrs_config)
 
     # Create enhanced context injector
@@ -176,7 +176,7 @@ def integrations_status(
 
 
 @app.command()
-async def test_integrations(
+def test_integrations(
     config_file: Path = typer.Option(
         Path("config.yaml"), "--config", "-c", help="Configuration file path"
     ),
@@ -193,48 +193,28 @@ async def test_integrations(
 
     integrations = IntegrationsManager(config)
 
+    async def run_checks() -> None:
+        try:
+            await integrations.initialize_all()
+            for name in ("lrs", "opencode", "neuralblitz"):
+                integration = integrations.get_integration(name)
+                if integration is None or not integration.enabled:
+                    console.print(f"[yellow]{name}: disabled[/yellow]")
+                elif integration.mode == "mock":
+                    console.print(f"[yellow]{name}: MOCK only; no network write, persistence, or measured computation[/yellow]")
+                else:
+                    console.print(f"[red]{name}: real adapter unavailable[/red]")
+                    raise RuntimeError(f"{name} does not have a real provider adapter")
+        finally:
+            await integrations.shutdown_all()
+
     try:
-        await integrations.initialize_all()
+        asyncio.run(run_checks())
+    except Exception as exc:
+        console.print(f"[red]Integration verification failed: {exc}[/red]")
+        raise typer.Exit(code=1) from exc
 
-        # Test LRS
-        lrs = integrations.get_integration("lrs")
-        if lrs and lrs.enabled:
-            await lrs.record_learning_event(
-                {"account": {"homePage": "test", "name": "test-user"}},
-                "tested",
-                {"id": "test:activity", "objectType": "Activity"},
-            )
-            console.print("[green]✓ LRS integration test passed[/green]")
-
-        # Test Opencode
-        opencode = integrations.get_integration("opencode")
-        if opencode and opencode.enabled:
-            doc_id = await opencode.create_research_document(
-                "Test Document",
-                "This is a test document created during integration testing.",
-                "Ideas",
-                ["#test", "#integration"],
-            )
-            console.print(
-                f"[green]✓ Opencode integration test passed - Doc ID: {doc_id}[/green]"
-            )
-
-        # Test NeuralBlitz
-        neuralblitz = integrations.get_integration("neuralblitz")
-        if neuralblitz and neuralblitz.enabled:
-            result = await neuralblitz.compute_geometric_features(
-                "test_data", "riemannian", 1.0
-            )
-            console.print(f"[green]✓ NeuralBlitz integration test passed[/green]")
-
-        await integrations.shutdown_all()
-        console.print(
-            "[bold green]All integration tests completed successfully[/bold green]"
-        )
-
-    except Exception as e:
-        console.print(f"[red]Integration test failed: {str(e)}[/red]")
-
+    console.print("[yellow]Integration mode verification complete; real connectivity was not tested.[/yellow]")
 
 def main() -> None:
     app()

@@ -20,7 +20,7 @@ jobs:
       # Context tests exercise the core module without installing the
       # optional heavyweight ML and remote-service integrations.
       - name: Install test dependencies
-        run: python -m pip install pytest pydantic
+        run: python -m pip install pytest pydantic typer rich pyyaml
       - name: Compile Python source
         run: python -m compileall -q src/advanced_research
       - name: Run Python core tests

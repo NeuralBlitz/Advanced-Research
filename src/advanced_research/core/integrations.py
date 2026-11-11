@@ -32,10 +32,23 @@ class LearningRecord:
         }
 
 
+class IntegrationNotImplementedError(RuntimeError):
+    """Raised when an actual provider implementation is requested but unavailable."""
+
+
 class BaseIntegration(ABC):
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.enabled = config.get("enabled", True)
+        self.enabled = config.get("enabled", False)
+        self.mode = config.get("mode", "mock")
+        if self.mode not in ("mock", "real"):
+            raise ValueError("integration mode must be 'mock' or 'real'")
+
+    def require_real_adapter(self, operation: str) -> None:
+        if self.enabled and self.mode == "real":
+            raise IntegrationNotImplementedError(
+                f"{type(self).__name__}.{operation}: real provider adapter is not implemented"
+            )
 
     @abstractmethod
     async def initialize(self) -> None:
@@ -58,8 +71,8 @@ class LRSIntegration(BaseIntegration):
         if not self.enabled:
             return
 
-        # Initialize LRS connection
-        print(f"Initializing LRS integration with endpoint: {self.endpoint}")
+        self.require_real_adapter("initialize")
+        print("[MOCK] LRS integration initialized without a network connection")
 
     async def shutdown(self) -> None:
         if not self.enabled:
@@ -77,6 +90,7 @@ class LRSIntegration(BaseIntegration):
     ) -> None:
         if not self.enabled:
             return
+        self.require_real_adapter("record_learning_event")
 
         record = LearningRecord(
             actor=actor,
@@ -123,12 +137,9 @@ class LRSIntegration(BaseIntegration):
         if not self.learning_records:
             return
 
-        # Here you would send to actual LRS endpoint
-        records_to_send = [record.to_dict() for record in self.learning_records]
-        print(f"Sending {len(records_to_send)} records to LRS")
-
-        # Clear sent records
-        self.learning_records.clear()
+        self.require_real_adapter("flush_records")
+        # Preserve queued records: the mock must never claim to have sent them.
+        print(f"[MOCK] {len(self.learning_records)} LRS records queued locally; 0 sent")
 
 
 class OpencodeIntegration(BaseIntegration):
@@ -142,7 +153,8 @@ class OpencodeIntegration(BaseIntegration):
         if not self.enabled:
             return
 
-        print(f"Initializing Opencode integration for workspace: {self.workspace}")
+        self.require_real_adapter("initialize")
+        print(f"[MOCK] Loaded simulated Opencode workspace: {self.workspace}")
         await self._load_project_structure()
 
     async def shutdown(self) -> None:
@@ -176,8 +188,8 @@ class OpencodeIntegration(BaseIntegration):
         }
 
     async def _save_project_structure(self) -> None:
-        # Save project structure to opencode
-        print("Saving project structure to Opencode")
+        self.require_real_adapter("_save_project_structure")
+        print("[MOCK] Opencode project structure not persisted")
 
     async def create_research_document(
         self,
@@ -188,9 +200,10 @@ class OpencodeIntegration(BaseIntegration):
         metadata: Optional[Dict[str, Any]] = None,
     ) -> str:
         if not self.enabled:
-            return "mock-doc-id"
+            return "mock:disabled"
+        self.require_real_adapter("create_research_document")
 
-        doc_id = f"doc_{int(datetime.now().timestamp())}"
+        doc_id = f"mock:doc_{int(datetime.now().timestamp())}"
 
         document = {
             "id": doc_id,
@@ -203,7 +216,7 @@ class OpencodeIntegration(BaseIntegration):
             "updated_at": datetime.now().isoformat(),
         }
 
-        print(f"Created research document: {doc_id} in area: {research_area}")
+        print(f"[MOCK] Simulated research document {doc_id} in area: {research_area}; not persisted")
         return doc_id
 
     async def search_documents(
@@ -214,11 +227,13 @@ class OpencodeIntegration(BaseIntegration):
     ) -> List[Dict[str, Any]]:
         if not self.enabled:
             return []
+        self.require_real_adapter("search_documents")
 
         # Mock search results
         results = [
             {
-                "id": "doc_1",
+                "id": "mock:doc_1",
+                "mock": True,
                 "title": f"Document matching: {query}",
                 "research_area": research_area or "Ideas",
                 "tags": tags or ["#research"],
@@ -240,8 +255,9 @@ class NeuralBlitzIntegration(BaseIntegration):
         if not self.enabled:
             return
 
+        self.require_real_adapter("initialize")
         print(
-            f"Initializing NeuralBlitz integration with backend: {self.computation_backend}"
+            f"[MOCK] NeuralBlitz geometric backend {self.computation_backend}; no real computation"
         )
         await self._load_geometric_layers()
 
@@ -249,7 +265,7 @@ class NeuralBlitzIntegration(BaseIntegration):
         if not self.enabled:
             return
 
-        print("Shutting down NeuralBlitz integration")
+        print("[MOCK] NeuralBlitz integration shutdown")
 
     async def _load_geometric_layers(self) -> None:
         # Initialize geometric computation layers
@@ -278,7 +294,8 @@ class NeuralBlitzIntegration(BaseIntegration):
         curvature: float = 1.0,
     ) -> Dict[str, Any]:
         if not self.enabled:
-            return {"features": [], "metadata": {"mock": True}}
+            return {"features": [], "metadata": {"mock": True, "status": "disabled"}}
+        self.require_real_adapter("compute_geometric_features")
 
         # Mock geometric computation
         features = {
@@ -291,7 +308,9 @@ class NeuralBlitzIntegration(BaseIntegration):
         metadata = {
             "manifold_type": manifold_type,
             "curvature": curvature,
-            "computation_time": 0.15,
+            "mock": True,
+            "status": "simulated",
+            "computation_time": None,
             "backend": self.computation_backend,
         }
 
@@ -304,7 +323,8 @@ class NeuralBlitzIntegration(BaseIntegration):
         manifold_config: Dict[str, Any],
     ) -> Dict[str, Any]:
         if not self.enabled:
-            return {"optimized_point": initial_point, "iterations": 0}
+            return {"optimized_point": initial_point, "iterations": 0, "mock": True, "status": "disabled"}
+        self.require_real_adapter("optimize_on_manifold")
 
         # Mock manifold optimization
         result = {
@@ -313,6 +333,8 @@ class NeuralBlitzIntegration(BaseIntegration):
             "final_loss": 0.001,
             "convergence": True,
             "path_length": 3.14159,
+            "mock": True,
+            "status": "simulated",
         }
 
         return result

@@ -366,7 +366,7 @@ func (ap *AutomatedPipeline) handleIdeationStage(task *PipelineTask, userID, ses
 	stage := opencode.StageIdeas
 	docType := opencode.TypeTheory
 
-	docID, err := ap.unifiedSys.(*unified.System).CreateResearchDocument(context.Background(),
+	docID, err := ap.unifiedSys.CreateResearchDocument(context.Background(),
 		fmt.Sprintf("Idea: %s", ap.truncateString(idea, 50)),
 		ap.expandIdeaIntoContent(idea),
 		stage,
@@ -408,7 +408,7 @@ func (ap *AutomatedPipeline) handleSynthesisStage(task *PipelineTask, userID, se
 	}
 
 	// Create synthesis document
-	docID, err := ap.unifiedSys.(*unified.System).CreateResearchDocument(context.Background(),
+	docID, err := ap.unifiedSys.CreateResearchDocument(context.Background(),
 		"Integrated Research Framework",
 		frameworkContent,
 		opencode.StageSynthesis,
@@ -450,7 +450,7 @@ func (ap *AutomatedPipeline) handleImplementationStage(task *PipelineTask, userI
 	}
 
 	// Create implementation document
-	docID, err := ap.unifiedSys.(*unified.System).CreateResearchDocument(context.Background(),
+	docID, err := ap.unifiedSys.CreateResearchDocument(context.Background(),
 		"Implementation Plan",
 		implementationPlan,
 		opencode.StageImplementation,
@@ -486,7 +486,7 @@ func (ap *AutomatedPipeline) handleValidationStage(task *PipelineTask, userID, s
 	}
 
 	// Create validation document
-	docID, err := ap.unifiedSys.(*unified.System).CreateResearchDocument(context.Background(),
+	docID, err := ap.unifiedSys.CreateResearchDocument(context.Background(),
 		"Validation Experiment",
 		validationContent,
 		opencode.StageImplementation,
@@ -810,48 +810,11 @@ Generated: ` + time.Now().Format(time.RFC3339)
 }
 
 func (ap *AutomatedPipeline) generateFinalReport() string {
-	return fmt.Sprintf(`# Pipeline Execution Summary
-
-## Pipeline: %s
-**Status**: %s
-**Duration**: %v seconds
-
-## Task Summary
-- Total Tasks: %d
-- Completed: %d
-- Failed: %d
-- Success Rate: %.1f%%
-
-## Generated Outputs
-- Documents: %d
-- Learning Events: %d
-- Geometric Computations: %d
-
-## Stage Progress
-`, ap.config.Name, ap.pipelineStatus, ap.metrics.PipelineDuration.Seconds(), ap.metrics.TotalTasks, ap.metrics.CompletedTasks, ap.metrics.FailedTasks, float64(ap.metrics.CompletedTasks)/float64(ap.metrics.TotalTasks)*100, ap.metrics.DocumentsGenerated, ap.metrics.LearningEvents, ap.metrics.GeometricComputations)
-
-	for _, stage := range ap.config.Stages {
-		stageTasks := ap.getTasksByStage(stage)
-		completedStageTasks := 0
-		for _, task := range stageTasks {
-			if task.Status == StatusCompleted {
-				completedStageTasks++
-			}
-		}
-		framework += fmt.Sprintf("- %s: %d/%d tasks completed\n", stage, completedStageTasks, len(stageTasks))
-	}
-
-	framework += fmt.Sprintf("\n**Generated**: %s", time.Now().Format(time.RFC3339))
-	return framework
-}
-
-func (ap *AutomatedPipeline) generateExecutionSummary() string {
-	successRate := float64(0)
+	successRate := 0.0
 	if ap.metrics.TotalTasks > 0 {
 		successRate = float64(ap.metrics.CompletedTasks) / float64(ap.metrics.TotalTasks) * 100
 	}
-
-	return fmt.Sprintf(`# Pipeline Execution Summary
+	report := fmt.Sprintf(`# Pipeline Execution Summary
 
 ## Pipeline: %s
 **Status**: %s
@@ -869,7 +832,10 @@ func (ap *AutomatedPipeline) generateExecutionSummary() string {
 - Geometric Computations: %d
 
 ## Stage Progress
-`, ap.config.Name, ap.pipelineStatus, ap.metrics.PipelineDuration.Seconds(), ap.metrics.TotalTasks, ap.metrics.CompletedTasks, ap.metrics.FailedTasks, successRate, ap.metrics.DocumentsGenerated, ap.metrics.LearningEvents, ap.metrics.GeometricComputations)
+`, ap.config.Name, ap.pipelineStatus, ap.metrics.PipelineDuration.Seconds(),
+		ap.metrics.TotalTasks, ap.metrics.CompletedTasks, ap.metrics.FailedTasks,
+		successRate, ap.metrics.DocumentsGenerated, ap.metrics.LearningEvents,
+		ap.metrics.GeometricComputations)
 
 	for _, stage := range ap.config.Stages {
 		stageTasks := ap.getTasksByStage(stage)
@@ -879,10 +845,13 @@ func (ap *AutomatedPipeline) generateExecutionSummary() string {
 				completedStageTasks++
 			}
 		}
-		return fmt.Sprintf("- %s: %d/%d tasks completed\n", stage, completedStageTasks, len(stageTasks))
+		report += fmt.Sprintf("- %s: %d/%d tasks completed\n", stage, completedStageTasks, len(stageTasks))
 	}
+	return report + fmt.Sprintf("\n**Generated**: %s", time.Now().Format(time.RFC3339))
+}
 
-	return fmt.Sprintf("\n**Generated**: %s", time.Now().Format(time.RFC3339))
+func (ap *AutomatedPipeline) generateExecutionSummary() string {
+	return ap.generateFinalReport()
 }
 
 func (ap *AutomatedPipeline) truncateString(s string, maxLen int) string {

@@ -71,28 +71,35 @@ class ContextInjector:
     def get_context(self, max_tokens: Optional[int] = None) -> str:
         self._cleanup_expired()
 
-        # Sort by priority (descending) then by timestamp (newest first)
+        # Sort by priority (descending), then by timestamp (newest first).
         sorted_blocks = sorted(
             self.context_blocks.values(),
-            key=lambda b: (b.priority.value, -b.timestamp.timestamp()),
+            key=lambda b: (b.priority.value, b.timestamp),
             reverse=True,
         )
 
+        # This legacy API names the limit "tokens" but measures characters.
+        max_size = self.max_context_size if max_tokens is None else max_tokens
+        if max_size < 0:
+            raise ValueError("max_tokens must be non-negative")
+
         context_parts = []
         current_size = 0
-        max_size = max_tokens or self.max_context_size
-
         for block in sorted_blocks:
-            if current_size + len(block.content) > max_size:
-                break
-            context_parts.append(f"## {block.key}\n{block.content}\n")
-            current_size += len(block.content)
+            rendered = f"## {block.key}\n{block.content}\n"
+            # Include formatting and joining separators in the size limit.
+            added_size = len(rendered) + (1 if context_parts else 0)
+            if current_size + added_size > max_size:
+                continue
+            context_parts.append(rendered)
+            current_size += added_size
 
         return "\n".join(context_parts)
 
     def get_context_blocks(
         self, filter_tags: Optional[List[str]] = None
     ) -> List[ContextBlock]:
+        self._cleanup_expired()
         blocks = list(self.context_blocks.values())
 
         if filter_tags:
@@ -104,7 +111,7 @@ class ContextInjector:
 
         return sorted(
             blocks,
-            key=lambda b: (b.priority.value, -b.timestamp.timestamp()),
+            key=lambda b: (b.priority.value, b.timestamp),
             reverse=True,
         )
 
@@ -151,6 +158,7 @@ class ContextInjector:
             del self.context_blocks[key]
 
     def get_statistics(self) -> Dict[str, Any]:
+        self._cleanup_expired()
         return {
             "total_blocks": len(self.context_blocks),
             "total_conversation_messages": len(self.conversation_history),
@@ -162,11 +170,11 @@ class ContextInjector:
                 )
                 for priority in Priority
             },
-            "oldest_block_age": min(
+            "oldest_block_age": max(
                 (block.age_seconds for block in self.context_blocks.values()),
                 default=0,
             ),
-            "newest_block_age": max(
+            "newest_block_age": min(
                 (block.age_seconds for block in self.context_blocks.values()),
                 default=0,
             ),

@@ -2,7 +2,7 @@
 
 ##  *Advanced Research in Theoretical Computer Sciences, Mathematical & Physical Foundations of Symbiotic Intelligence*
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Research Status](https://img.shields.io/badge/Research-Active-success.svg)](#)
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 
@@ -31,13 +31,20 @@ The research contained here focuses on creating a symbiotic intelligence framewo
 ## 📂 Repository Structure
 
 ```text
-├── .github/workflows   # CI/CD and automated research validation
-├── Ideas/              # Exploratory research, whitepapers, and conceptual drafts
-├── README.md           # Project documentation and roadmap
-└── [Project Scripts]   # Python-based implementations of research concepts
+├── .github/            # Dependabot configuration and issue templates
+├── Ideas/              # Research proposals, frameworks, and manuscripts
+├── phd/                # Longer-form research and dissertation drafts
+├── src/advanced_research/  # Python implementation
+├── cmd/cli/            # Go command-line interface
+├── pkg/                # Go research and integration packages
+├── configs/            # Runtime configuration examples
+├── RESEARCH_ROADMAP.md # Research roadmap
+└── README.md           # Repository introduction
 ```
 
-*   **/Ideas**: This is the heart of the repository, containing 199+ commits of evolving theories, draft algorithms, and interdisciplinary connections between physics and AI.
+*   **/Ideas**: A collection of evolving theories, draft algorithms, and interdisciplinary research manuscripts. Research proposals and mathematical claims should not be treated as independently validated without supporting proofs, reproducible experiments, or independent review.
+
+**Engineering status (November 11, 2026):** Python and Go core regression tests, the `.github/workflows/research-core.yml` CI workflow, and Go dependency checksums have been added. These checks cover syntax, compilation, context behavior, and pipeline reporting; they do not establish correctness of external services or scientific claims. Existing gitlinks still lack the `.gitmodules` mappings required for normal recursive submodule initialization; avoid relying on `git submodule update --init --recursive` until those mappings are recovered.
 
 ---
 
@@ -62,10 +69,10 @@ pip install -r requirements.txt
 
 ## 🛠 Technology Stack
 
-*   **Languages:** Python (Primary Research Core)
-*   **AI/ML:** PyTorch, JAX, Transformers
-*   **Logic:** Tools for Theorem Proving and Formal Logic
-*   **Visualization:** Custom GUI built for research transparency
+*   **Languages:** Python and Go
+*   **AI/ML:** PyTorch with optional JAX/Flax integrations
+*   **Research:** Mathematics, theoretical computing, and experimental pipeline implementations
+*   **Engineering:** Python packaging (`pyproject.toml`) and a Go module (`go.mod`)
 
 ---
 
@@ -82,7 +89,7 @@ We welcome researchers, physicists, and mathematicians interested in the "Symbio
 
 ## 📜 License
 
-This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**, as recorded in [LICENSE](LICENSE).
 
 ---
 

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -482,8 +483,7 @@ func min(a, b int) int {
 	return b
 }
 
-func readResponseBody(body *http.Response) ([]byte, error) {
-	defer body.Close()
+func readResponseBody(body io.Reader) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	_, err := buf.ReadFrom(body)
 	return buf.Bytes(), err

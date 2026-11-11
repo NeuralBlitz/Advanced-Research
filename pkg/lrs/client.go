@@ -136,6 +136,11 @@ type Client struct {
 	mutex       sync.RWMutex
 }
 
+// Enabled reports whether a non-nil client has an enabled configuration.
+func (c *Client) Enabled() bool {
+	return c != nil && c.config != nil && c.config.Enabled
+}
+
 // NewClient creates a new LRS client
 func NewClient(config *Config, logger *logrus.Logger) (*Client, error) {
 	if config == nil {

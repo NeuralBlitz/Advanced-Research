@@ -1,10 +1,10 @@
 # Advanced Research Go Implementation
 
-A comprehensive Go implementation of the Advanced Research framework for symbiotic intelligence with NeuralBlitz integration.
+A research-stage Go implementation of the Advanced Research framework. The CLI and local core can be compiled and tested; external service operations and server endpoints are not yet production-ready.
 
 ## Overview
 
-This Go implementation provides high-performance, production-ready systems for:
+The Go source explores these systems (implementation maturity varies):
 
 - **Learning Record Store (LRS) Integration**: Real-time learning analytics
 - **Opencode Documentation**: Structured research workflow management  
@@ -41,7 +41,7 @@ web/                # Web frontend (optional)
 ## Quick Start
 
 ### Prerequisites
-- Go 1.21 or later
+- Go 1.25 or later (as required by `go.mod`)
 - Git
 - Docker (optional)
 
@@ -49,8 +49,8 @@ web/                # Web frontend (optional)
 
 ```bash
 # Clone the repository
-git clone https://github.com/advanced-research/go
-cd go
+git clone https://github.com/NeuralBlitz/Advanced-Research.git
+cd Advanced-Research
 
 # Install dependencies
 go mod download
@@ -58,8 +58,8 @@ go mod download
 # Build the CLI
 make build
 
-# Run the server
-make server
+# Server is not implemented yet; the CLI returns an explicit error
+./bin/advanced-research server
 
 # Run the CLI
 ./bin/advanced-research --help
@@ -129,7 +129,7 @@ integrations:
 ./bin/advanced-research status
 ```
 
-### HTTP API Usage
+### HTTP API Usage (planned; these endpoints are not implemented)
 
 ```bash
 # Start the server

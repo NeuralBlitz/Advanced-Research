@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -109,7 +110,9 @@ var serverCmd = &cobra.Command{
 	Short: "Start the HTTP/gRPC server",
 	Long: `Start the Advanced Research server to provide HTTP and gRPC APIs.
 This enables remote access to all system capabilities.`,
-	Run: startServer,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return fmt.Errorf("server is not implemented: no HTTP or gRPC listener is started")
+	},
 }
 
 // contextCmd represents the context command
@@ -203,8 +206,14 @@ func initialize(cmd *cobra.Command, args []string) {
 
 	// Create default config if it doesn't exist
 	configPath := getConfigPath()
+	if cfgFile != "" {
+		configPath = cfgFile
+	}
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		createDefaultConfig(configPath)
+		if err := createDefaultConfig(configPath); err != nil {
+			color.Red("❌ Failed to create configuration: %v", err)
+			return
+		}
 		color.Green("✓ Created default configuration at %s", configPath)
 	}
 
@@ -436,33 +445,6 @@ func showStatus(cmd *cobra.Command, args []string) {
 	printSystemStatus(status)
 }
 
-func startServer(cmd *cobra.Command, args []string) {
-	color.Cyan("🚀 Starting Advanced Research server...")
-
-	config := loadConfig()
-	if config == nil {
-		color.Red("❌ Failed to load configuration")
-		return
-	}
-
-	logger := logrus.New()
-	system, err := unified.NewSystem(config, logger)
-	if err != nil {
-		color.Red("❌ Failed to initialize system: %v", err)
-		return
-	}
-	defer system.Close(cmd.Context())
-
-	color.Green("✓ Server started successfully")
-	color.White("HTTP Server: http://localhost:%d", config.Server.HTTPPort)
-	color.White("gRPC Server: localhost:%d", config.Server.GRPCPort)
-	color.White("Press Ctrl+C to stop")
-
-	// In a real implementation, this would start the actual HTTP/gRPC servers
-	// For now, we'll just simulate server startup
-	select {}
-}
-
 func runContextDemo(cmd *cobra.Command, args []string) {
 	color.Cyan("🧠 Context Injection System Demo")
 
@@ -630,28 +612,27 @@ func getConfigPath() string {
 	return filepath.Join(home, ".advanced-research.yaml")
 }
 
-func createDefaultConfig(path string) {
-	
-	// In a real implementation, this would marshal the config to YAML
-	// For now, we'll create a simple config file
+func createDefaultConfig(path string) error {
+	// Disabled external service integrations are safe to initialize locally;
+	// enable them only after providing real endpoints and credentials.
 	configContent := `server:
   http_port: 8080
   grpc_port: 9090
-  host: "0.0.0.0"
+  host: "127.0.0.1"
 
 integrations:
   lrs:
-    enabled: true
+    enabled: false
     endpoint: "http://localhost:8080/xapi/"
     timeout: "30s"
     retry_attempts: 3
     batch_size: 10
   
   opencode:
-    enabled: true
+    enabled: false
     workspace: "advanced-research"
     local_path: "./research-docs"
-    auto_commit: true
+    auto_commit: false
   
   neuralblitz:
     enabled: true
@@ -665,19 +646,25 @@ processing:
   context_max_size: 10000
 
 security:
-  jwt_secret: "your-jwt-secret-key"
   token_expiry: "24h"
   rate_limit_enabled: true
   requests_per_minute: 100
 `
 
-	os.WriteFile(path, []byte(configContent), 0644)
+	return os.WriteFile(path, []byte(configContent), 0600)
 }
 
 func loadConfig() *unified.Config {
-	// In a real implementation, this would use viper to unmarshal YAML
-	// For now, return default config
-	return unified.DefaultConfig()
+	path := getConfigPath()
+	if cfgFile != "" {
+		path = cfgFile
+	}
+	config, err := readRuntimeConfig(path)
+	if err != nil {
+		logrus.WithError(err).Error("Unable to load runtime configuration")
+		return nil
+	}
+	return config
 }
 
 func printIntegrationStatus(config *unified.Config) {

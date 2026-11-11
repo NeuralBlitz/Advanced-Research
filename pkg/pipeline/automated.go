@@ -8,9 +8,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/advanced-research/go/pkg/core"
-	"github.com/advanced-research/go/pkg/lrs"
-	"github.com/advanced-research/go/pkg/neuralblitz"
 	"github.com/advanced-research/go/pkg/opencode"
 	"github.com/advanced-research/go/pkg/unified"
 )

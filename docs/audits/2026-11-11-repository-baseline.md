@@ -69,3 +69,12 @@ Maintain traceability from a theory document to its experiment protocol, code re
 ## Verification boundary
 
 This report is based on retrieved repository state at the stated baseline; it is **not** a statement that builds, tests, documentation publication, or experimental claims passed. Changes proposed in the audit branch must be reviewed and merged before they affect `main`.
+
+## Post-baseline resolution update — 2026-11-11
+
+The measurements and findings above describe `main` at the original inspected SHA `9a8235ece79944e431af0bfca44142814e48f23c`. They should be preserved as a historical baseline, not read as a claim about the present branch after subsequent merges.
+
+- [PR #61](https://github.com/NeuralBlitz/Advanced-Research/pull/61) was **merged** as `480a55e6ca69b5171ebe84c00828762ba85b0387`. It established core Python/Go regression tests and a passing CI workflow, repaired the observed Go compiler blockers, and committed a resolved `go.sum`. This partially addresses findings 4 and 5 and closes the missing-checksum concern in finding 8.
+- Python/Go runtime service integrations, production server behavior, and independent mathematical validation were not established by those checks.
+- The 28 Gitlink URL mappings, missing `.gitmodules`, Read the Docs configuration, dependency duplication, and roadmap organization remain tracked follow-ups.
+
